@@ -34,7 +34,7 @@ const discount = require("./src/route/discount.route");
 
 // cors options
 var corsOptions = {
-  origin: "http://localhost:3000",
+  origin: "http://43.205.217.105",
   optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
 };
 

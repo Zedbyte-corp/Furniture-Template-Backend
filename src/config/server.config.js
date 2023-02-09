@@ -3,7 +3,7 @@
 module.exports = {
   host: "0.0.0.0",
   port: 5000,
-  dbUrl: "mongodb+srv://nivasnivi:123@homie.lhykr.mongodb.net/Template",
+  dbUrl: "mongodb+srv://bitsup:tNo9t9eNuTtlLJRH@cluster0.9qizdog.mongodb.net/Furniture-Template",
   styleCollection: "Style",
   productCollection: "Product",
   contentCollection: "Content",
