@@ -1,0 +1,263 @@
+{
+  "main server": {
+    "prefix": "serv",
+    "body": [
+      "const express = require(\"express\");",
+      "const app = express();",
+      "const cors = require(\"cors\");",
+      "const mongoose = require(\"mongoose\");",
+      "const Config = require(\"./src/config/${1:server}.config\");",
+      "",
+      "// Configuration",
+      "var port = Config.port;",
+      "var host = Config.host;",
+      "const url = Config.dbUrl;",
+      "",
+      "//Connect to the db",
+      "mongoose.connect(url, { useUnifiedTopology: true, useNewUrlParser: true });",
+      "const db = mongoose.connection;",
+      "",
+      "//checking the db connection",
+      "db.on(\"error\", (err) => {",
+      "  console.log(err);",
+      "});",
+      "",
+      "db.once(\"open\", () => {",
+      "  console.log(\"Db connected......\");",
+      "});",
+      "",
+      "//Import Routes (add as many)",
+      "const $2= require(\"./src/route/$2.route\");",
+      "",
+      "// cors options",
+      "var corsOptions = {",
+      "  origin: \"http://$3:$4\",",
+      "  optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204",
+      "};",
+      "",
+      "//MiddleWare",
+      "app.use(cors(corsOptions));",
+      "app.use(express.json());",
+      "app.use(express.urlencoded({ extended: true }));",
+      "",
+      "//ROUTES (add as many)",
+      "app.use(\"/$2\", $2);",
+      "app.get(\"/\", function (req, res) {",
+      "  res.send(\"<p>TEMPLATE</p>\");",
+      "});",
+      "",
+      "//Listening to the server",
+      "app.listen(port, host, function () {",
+      "  console.log(`Server is running on Host: \\${host}:\\${port}`);",
+      "});",
+      ""
+    ],
+    "description": "main server"
+  },
+  "module exports": {
+    "prefix": "modex",
+    "body": ["module.exports = {", "  $1", "};", ""],
+    "description": "module exports"
+  },
+  "create router": {
+    "prefix": "creatert",
+    "body": [
+      "const express = require(\"express\");",
+      "const router = express.Router();",
+      "const $1Controller = require(\"../controller/$2.controller\");",
+      "const validation = require(\"../middleware/validate.middleware\");",
+      "",
+      "router.post(\"/$3\", validation.$4 ,$1Controller.$5);",
+      "",
+      "module.exports = router;"
+    ],
+    "description": "create router"
+  },
+  "create route endpoint": {
+    "prefix": "rte",
+    "body": ["router.${1|get,post,put,patch,delete|}(\"/$2\", $3.$4);"],
+    "description": "create route endpoint"
+  },
+  "create response messages": {
+    "prefix": "rmsg",
+    "body": ["const $1= ($2) => `$3`;", ""],
+    "description": "create response messages"
+  },
+  "create mongodb schema using mongoose": {
+    "prefix": "monsch",
+    "body": [
+      "const mongoose = require(\"mongoose\");",
+      "const config = require(\"../config/${1:server}.config\");",
+      "const collectionName = config.$2;",
+      "",
+      "const $3Schema = mongoose.Schema({",
+      "  $5",
+      "});",
+      "",
+      "const $4Model = mongoose.model(\"$3\", $3Schema, collectionName);",
+      "module.exports = $4Model;",
+      ""
+    ],
+    "description": "create mongodb schema using mongoose"
+  },
+  "create entries for mongoose schema": {
+    "prefix": "schent",
+    "body": [
+      "$1:{",
+      "    type: ${2|String,Number,Date,Buffer,Boolean,Mixed,ObjectId,Array,Decimal128,Map,Int32,subSchema|},",
+      "    require: ${3|true,false|}",
+      "},"
+    ],
+    "description": "create entries for mongoose schema"
+  },
+  "create validation for forms": {
+    "prefix": "vldr",
+    "body": [
+      "const $1Validator = (req, res, next) => {",
+      "  const validationRule = {",
+      "    $2: \"${3:required|}${4|string,integer|}\"",
+      "  };",
+      "  baseValidator(req.body,validationRule,res, next);",
+      "};"
+    ],
+    "description": "create validation for forms"
+  },
+  "creates a rest api skeleton": {
+    "prefix": "rest",
+    "body": [
+      "const $1 = async (req, res) => {",
+      "  try {",
+      "    $2",
+      "  } catch (error) {",
+      "    const responseObject = response.error(error.message);",
+      "    return res.status(200).json(responseObject);",
+      "  }",
+      "};"
+    ],
+    "description": "creates a rest api skeleton"
+  },
+  "create one doc rest api": {
+    "prefix": "restco",
+    "body": [
+      "let responseObject = {};",
+      "let params = req.body;",
+      "let query = {${1:uid:params.uid}};",
+      "const doc = new ${2:Model}({",
+      "  ${5:{uid:params.uid}}",
+      "});",
+      "",
+      "const result = await ${2:Model}.findOne(query).lean();",
+      "",
+      "if (result) {",
+      "  responseObject = response.error(",
+      "    ${3:messageResponse.msg(\"error\")}",
+      "  );",
+      "} else {",
+      "  const result = await doc.save();",
+      "  responseObject = response.success(${4:messageResponse.msg(\"value\")},result);",
+      "}",
+      "return res.status(200).json(responseObject);"
+    ],
+    "description": "create one doc rest api"
+  },
+  "read one doc rest api": {
+    "prefix": "restro",
+    "body": [
+      "let responseObject = {};",
+      "let params = req.body;",
+      "let query = {${1:uid:params.uid}};",
+      "",
+      "const result = await ${2:Model}.findOne(query).lean();",
+      "",
+      "if (result) {",
+      "  responseObject = response.success(${3:messageResponse.msg(\"value\")},result);",
+      "} else {",
+      "  responseObject = response.error(",
+      "    ${4:messageResponse.msg(\"error\")}",
+      "  );",
+      "}",
+      "return res.status(200).json(responseObject);"
+    ],
+    "description": "read one doc rest api"
+  },
+  "read list query with pagination": {
+    "prefix": "restrm",
+    "body": [
+      "const { page = 1, limit = ${1:10} } = req.body;",
+      "const params = req.body;",
+      "const required = [\"${7:name}\"].values();",
+      "var filter = [];",
+      "var query = {};",
+      "var responseObject = {};",
+      "",
+      "for (let i of required) {",
+      "  if (params[i] !== \"\" && params[i] !== null && params[i] !== undefined) {",
+      "    let obj = {};",
+      "    obj[i] = params[i];",
+      "    filter.push(obj);",
+      "  }",
+      "}",
+      "",
+      "if (filter.length !== 0) {",
+      "  query = { ${2:\\$and}: filter };",
+      "}",
+      "",
+      "const result = await ${3:Model}.find(query)",
+      "  .select(${4:requiredFields.fieldname})",
+      "  .limit(limit * 1)",
+      "  .skip((page - 1) * limit);",
+      "",
+      "if (result.length !== 0) {",
+      "  responseObject = response.success(",
+      "    ${5:messageResponse.msg(\"value\")},",
+      "    result",
+      "  );",
+      "} else {",
+      "  responseObject = response.error(${6:messageResponse.msg(\"error\")});",
+      "}",
+      "return res.status(200).json(responseObject);"
+    ],
+    "description": "read list query with pagination"
+  },
+  "update one doc rest api": {
+    "prefix": "restuo",
+    "body": [
+      "let responseObject = {};",
+      "let params = req.body;",
+      "let query = {${1:uid:params.uid}};",
+      "let value = {${2:name:params.name}};",
+      "",
+      "const result = await ${3:Model}.updateOne(query,value);",
+      "",
+      "if (result.acknowledged) {",
+      "  responseObject = response.success(${4:messageResponse.msg(\"value\")},result);",
+      "} else {",
+      "  responseObject = response.error(",
+      "    ${5:messageResponse.msg(\"error\")}",
+      "  );",
+      "}",
+      "return res.status(200).json(responseObject);"
+    ],
+    "description": "update one doc rest api"
+  },
+  "delete one doc rest api": {
+    "prefix": "restdo",
+    "body": [
+      "let responseObject = {};",
+      "let params = req.body;",
+      "let query = {${1:uid:params.uid}};",
+      "",
+      "const result = await ${3:Model}.deleteOne(query);",
+      "",
+      "if (result.acknowledged) {",
+      "  responseObject = response.success(${4:messageResponse.msg(\"value\")},result);",
+      "} else {",
+      "  responseObject = response.error(",
+      "    ${5:messageResponse.msg(\"error\")}",
+      "  );",
+      "}",
+      "return res.status(200).json(responseObject);"
+    ],
+    "description": "delete one doc rest api"
+  }
+}
