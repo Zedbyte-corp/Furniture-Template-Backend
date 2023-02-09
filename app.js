@@ -34,7 +34,7 @@ const discount = require("./src/route/discount.route");
 
 // cors options
 var corsOptions = {
-  origin: "http://43.205.217.105",
+  origin: "https://srikrishnafurniture.com",
   optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
 };
 
