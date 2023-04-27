@@ -34,7 +34,7 @@ const discount = require("./src/route/discount.route");
 
 // cors options
 var corsOptions = {
-  origin: "https://srikrishnafurniture.com",
+  origin: "https://furniture-frontend-xgyk.onrender.com",
   optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
 };
 
